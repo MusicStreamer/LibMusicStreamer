@@ -1,0 +1,4 @@
+[package]
+name = "music_streamer"
+version = "0.1.0"
+authors = ["Jiří Konečný <DragonLichcz@gmail.com>"]
