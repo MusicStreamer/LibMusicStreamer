@@ -14,32 +14,32 @@
 // along with libmusic_streamer.  If not, see <http://www.gnu.org/licenses/>.
 
 //! Specific deezer implementation of authorization and authentication trait.
-//! Object AuthObjectDeezer will implement whole process.
+//! Object AuthDeezer will implement whole process.
 
 use super::AuthMethods;
 use super::AuthorizationStatus;
 
 /// Store information about authorization progress and token
-pub struct AuthObjectDeezer {
+pub struct AuthDeezer {
     status: AuthorizationStatus,
     token: String,
 }
 
-impl AuthObjectDeezer {
+impl AuthDeezer {
     //! Authentication object for deezer.
     //! This object will be used for user and application Authentication
     
     /// Create new Deezer authentication object
     /// token will be set to empty string
-    pub fn new() -> AuthObjectDeezer {
-        AuthObjectDeezer {
+    pub fn new() -> AuthDeezer {
+        AuthDeezer {
             status: AuthorizationStatus::Nothing,
             token: "".to_string(),
         }
     }
 }
 
-impl AuthMethods for AuthObjectDeezer {
+impl AuthMethods for AuthDeezer {
     
     /// Get status of ongoing authentication
     fn status(&self) -> &AuthorizationStatus {
@@ -53,10 +53,10 @@ impl AuthMethods for AuthObjectDeezer {
     /// # Examples
     ///
     /// ```
-    /// use music_streamer::auth::deezer::AuthObjectDeezer;
+    /// use music_streamer::auth::deezer::AuthDeezer;
     /// use music_streamer::auth::AuthMethods;
     ///
-    /// let auth = AuthObjectDeezer::new();
+    /// let auth = AuthDeezer::new();
     ///
     /// let link = auth.get_authorize_link("111", "http://example.com");
     /// assert_eq!(link, "https://connect.deezer.com/oauth/auth.php?app_id=111\
@@ -75,11 +75,11 @@ impl AuthMethods for AuthObjectDeezer {
     /// # Examples
     ///
     /// ```
-    /// use music_streamer::auth::deezer::AuthObjectDeezer;
+    /// use music_streamer::auth::deezer::AuthDeezer;
     /// use music_streamer::auth::AuthMethods;
     /// 
     /// let mut token = "token".to_string();
-    /// let mut auth = AuthObjectDeezer::new();
+    /// let mut auth = AuthDeezer::new();
     /// assert_eq!(auth.save_token(token), true);
     /// 
     /// let load_token = auth.get_token();
