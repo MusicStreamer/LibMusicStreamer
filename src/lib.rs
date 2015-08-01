@@ -1,1 +1,1 @@
-pub mod deezer;
+pub mod auth;

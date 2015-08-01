@@ -1,3 +1,6 @@
+//! Specific deezer implementation of authorization and authentication trait.
+//! Object AuthObjectDeezer will implement whole process.
+
 use super::AuthMethods;
 use super::AuthorizationStatus;
 
@@ -8,7 +11,12 @@ pub struct AuthObjectDeezer {
 }
 
 impl AuthObjectDeezer {
-    fn new() -> AuthObjectDeezer {
+    //! Authentication object for deezer.
+    //! This object will be used for user and application Authentication
+    
+    /// Create new Deezer authentication object
+    /// token will be set to empty string
+    pub fn new() -> AuthObjectDeezer {
         AuthObjectDeezer {
             status: AuthorizationStatus::Nothing,
             token: "".to_string(),
@@ -30,8 +38,8 @@ impl AuthMethods for AuthObjectDeezer {
     /// # Examples
     ///
     /// ```
-    /// use music_streamer::deezer::auth::AuthObjectDeezer;
-    /// use music_streamer::deezer::auth::AuthMethods;
+    /// use music_streamer::auth::deezer::AuthObjectDeezer;
+    /// use music_streamer::auth::AuthMethods;
     ///
     /// let auth = AuthObjectDeezer::new();
     ///
@@ -46,27 +54,26 @@ impl AuthMethods for AuthObjectDeezer {
     }
 
     /// Save token to authentication object
-    /// Incomming token will be erased for security reasons
+    /// Incomming token will be moved so it won't be usable anymore
+    /// for security reasons
     ///
     /// # Examples
     ///
     /// ```
-    /// use music_streamer::deezer::auth::AuthObjectDeezer;
+    /// use music_streamer::auth::deezer::AuthObjectDeezer;
+    /// use music_streamer::auth::AuthMethods;
     /// 
-    /// let token = "token";
-    /// let auth = AuthObjectDeezer();
+    /// let mut token = "token".to_string();
+    /// let mut auth = AuthObjectDeezer::new();
     /// assert_eq!(auth.save_token(token), true);
     /// 
-    /// let load_token = auth.load_token();
-    /// assert_eq!(load_token, token);
+    /// let load_token = auth.get_token();
+    /// assert_eq!(load_token, "token");
     /// ```
     ///
-    fn save_token(&mut self, mut token: String) -> bool {
-        self.token = token.to_string();
-        // remove token 
-        // this will be the only place where token will be stored
-        // for security reasons
-        token.clear();
+    fn save_token(&mut self, token: String) -> bool {
+        self.token = token;
+
         true
     }
     
