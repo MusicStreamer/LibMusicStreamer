@@ -35,7 +35,7 @@ pub trait AuthMethods {
     fn status(&self) -> &AuthorizationStatus;
 
     /// Create uri for user authentication in form:
-    fn get_authorize_link(&self, app_id: &str, redirect_uri: &str) -> String;
+    fn get_authorize_link(&mut self, app_id: &str, redirect_uri: &str) -> String;
 
     /// Save token to authentication object
     /// Incomming token will be moved so it won't be usable anymore

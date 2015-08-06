@@ -62,9 +62,10 @@ impl AuthMethods for AuthDeezer {
     /// assert_eq!(link, "https://connect.deezer.com/oauth/auth.php?app_id=111\
     ///                   &redirect_uri=http://example.com&perms=basic_access");
     /// ```
-    fn get_authorize_link(&self, app_id: &str, redirect_uri: &str) -> String {
+    fn get_authorize_link(&mut self, app_id: &str, redirect_uri: &str) -> String {
         let base_uri = "https://connect.deezer.com/oauth/auth.php?app_id=".to_string();
         let complete_uri = base_uri + app_id + "&redirect_uri=" + redirect_uri + "&perms=basic_access";
+        self.status = AuthorizationStatus::UserAuthentication;
         complete_uri
     }
 
@@ -88,6 +89,7 @@ impl AuthMethods for AuthDeezer {
     ///
     fn save_token(&mut self, token: String) -> bool {
         self.token = token;
+        self.status = AuthorizationStatus::TokenAquired;
 
         true
     }
