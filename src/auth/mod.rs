@@ -34,8 +34,15 @@ pub trait AuthMethods {
     /// Get status of ongoing authentication
     fn status(&self) -> &AuthorizationStatus;
 
-    /// Create uri for user authentication in form:
+    /// Return uri for user to authorize the application in his account
     fn get_authorize_link(&mut self, app_id: &str, redirect_uri: &str) -> String;
+
+    /// Get code from response returned by browser after app
+    /// authorization is completed by user
+    fn parse_reponse_code(&self, response: &str) -> String;
+
+    /// Authenticate application with generated code from authorization process
+    fn authenticate_application(&mut self, app_id: &str, app_secret: &str, code: &str) -> bool;
 
     /// Save token to authentication object
     /// Incomming token will be moved so it won't be usable anymore

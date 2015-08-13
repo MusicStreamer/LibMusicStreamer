@@ -56,7 +56,7 @@ impl AuthMethods for AuthDeezer {
     /// use music_streamer::auth::deezer::AuthDeezer;
     /// use music_streamer::auth::AuthMethods;
     ///
-    /// let auth = AuthDeezer::new();
+    /// let mut auth = AuthDeezer::new();
     ///
     /// let link = auth.get_authorize_link("111", "http://example.com");
     /// assert_eq!(link, "https://connect.deezer.com/oauth/auth.php?app_id=111\
@@ -67,6 +67,41 @@ impl AuthMethods for AuthDeezer {
         let complete_uri = base_uri + app_id + "&redirect_uri=" + redirect_uri + "&perms=basic_access";
         self.status = AuthorizationStatus::UserAuthentication;
         complete_uri
+    }
+
+
+    /// Get code from authorization response uri
+    ///
+    /// TODO: Implement this method
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use music_streamer::auth::deezer::AuthDeezer;
+    /// use music_streamer::auth::AuthMethods;
+    ///
+    /// let auth = AuthDeezer::new();
+    ///
+    /// let test = "http://example.com/test_path/?code=fre54bf0a48d1bf566f24c2289ce06d1";
+    /// let result = auth.parse_reponse_code(test);
+    ///
+    /// assert_eq!(result, ""); // will be implemented "fre54bf0a48d1bf566f24c2289ce06d1");
+    /// ```
+    fn parse_reponse_code(&self, response: &str) -> String {
+        "".to_string()
+    }
+
+    /// Authenticate application with code get from get_authorization_response link.
+    /// This will connect to deezer and retrieve token for future communication.
+    fn authenticate_application(&mut self, app_id: &str, app_secret: &str,
+                               code: &str) -> bool {
+        let base_uri = "https://connect.deezer.com/oauth/access_token.php?app_id=".to_string();
+        let complete_uri = base_uri + app_id + "&secret=" + app_secret + "&code=" + code;
+
+        // retrieve the token
+        self.status = AuthorizationStatus::AuthorizationCompleted;
+
+        true
     }
 
     /// Save token to authentication object
