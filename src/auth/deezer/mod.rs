@@ -72,8 +72,6 @@ impl AuthMethods for AuthDeezer {
 
     /// Get code from authorization response uri
     ///
-    /// TODO: Implement this method
-    ///
     /// # Examples
     ///
     /// ```
@@ -85,10 +83,16 @@ impl AuthMethods for AuthDeezer {
     /// let test = "http://example.com/test_path/?code=fre54bf0a48d1bf566f24c2289ce06d1";
     /// let result = auth.parse_reponse_code(test);
     ///
-    /// assert_eq!(result, ""); // will be implemented "fre54bf0a48d1bf566f24c2289ce06d1");
+    /// assert_eq!(result, Some("fre54bf0a48d1bf566f24c2289ce06d1".to_string()));
     /// ```
-    fn parse_reponse_code(&self, response: &str) -> String {
-        "".to_string()
+    fn parse_reponse_code(&self, response: &str) -> Option<String> {
+        let option = response.to_string().rfind("?code=");
+
+        if let Some(x) = option {
+            Some(response[x+6..].to_string())
+        } else {
+            None
+        }
     }
 
     /// Authenticate application with code get from get_authorization_response link.
