@@ -126,11 +126,9 @@ impl AuthMethods for AuthDeezer {
     /// assert_eq!(load_token, "token");
     /// ```
     ///
-    fn save_token(&mut self, token: String) -> bool {
+    fn save_token(&mut self, token: String) {
         self.token = token;
         self.status = AuthorizationStatus::TokenAquired;
-
-        true
     }
     
     /// Get active user token

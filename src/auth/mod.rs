@@ -47,7 +47,7 @@ pub trait AuthMethods {
     /// Save token to authentication object
     /// Incomming token will be moved so it won't be usable anymore
     /// for security reasons
-    fn save_token(&mut self, token: String) -> bool;
+    fn save_token(&mut self, token: String);
 
     /// Get active user token
     /// 
