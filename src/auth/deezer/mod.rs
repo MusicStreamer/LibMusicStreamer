@@ -19,6 +19,9 @@
 use super::AuthMethods;
 use super::AuthorizationStatus;
 
+use std::io::Read;
+use hyper::Client;
+
 /// Store information about authorization progress and token
 pub struct AuthDeezer {
     status: AuthorizationStatus,
@@ -85,7 +88,7 @@ impl AuthMethods for AuthDeezer {
     ///
     /// assert_eq!(result, Some("fre54bf0a48d1bf566f24c2289ce06d1".to_string()));
     /// ```
-    fn parse_reponse_code(&self, response: &str) -> Option<String> {
+    fn parse_response_code(&self, response: &str) -> Option<String> {
         let option = response.to_string().rfind("?code=");
 
         if let Some(x) = option {
@@ -98,14 +101,31 @@ impl AuthMethods for AuthDeezer {
     /// Authenticate application with code get from get_authorization_response link.
     /// This will connect to deezer and retrieve token for future communication.
     fn authenticate_application(&mut self, app_id: &str, app_secret: &str,
-                               code: &str) -> bool {
+                               code: &str) -> Result<(), &str> {
         let base_uri = "https://connect.deezer.com/oauth/access_token.php?app_id=".to_string();
         let complete_uri = base_uri + app_id + "&secret=" + app_secret + "&code=" + code;
 
-        // retrieve the token
-        self.status = AuthorizationStatus::AuthorizationCompleted;
+		// Get the token
+        let client = Client::new();
+        // Send get to the server
+        if let Ok(mut res) = client.get(&complete_uri).send() {
+            let mut body = String::new();
+            let ret = res.read_to_string(&mut body);
 
-        true
+            if ret.is_err() {
+                return Err("Can't read the response. Something is really wrong.")
+            }
+
+            println!("response: {}", body);
+            // TODO: Parse response and test this
+
+            // retrieve the token
+            self.status = AuthorizationStatus::AuthorizationCompleted;
+        } else {
+            return Err("Can't send request to the deezer server")
+        }
+
+        Ok(())
     }
 
     /// Save token to authentication object

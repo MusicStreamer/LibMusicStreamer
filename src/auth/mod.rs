@@ -39,10 +39,10 @@ pub trait AuthMethods {
 
     /// Get code from response returned by browser after app
     /// authorization is completed by user
-    fn parse_reponse_code(&self, response: &str) -> Option<String>;
+    fn parse_response_code(&self, response: &str) -> Option<String>;
 
     /// Authenticate application with generated code from authorization process
-    fn authenticate_application(&mut self, app_id: &str, app_secret: &str, code: &str) -> bool;
+    fn authenticate_application(&mut self, app_id: &str, app_secret: &str, code: &str) -> Result<(), &str>;
 
     /// Save token to authentication object
     /// Incomming token will be moved so it won't be usable anymore
