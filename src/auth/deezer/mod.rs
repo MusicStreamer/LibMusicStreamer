@@ -26,6 +26,7 @@ use hyper::Client;
 pub struct AuthDeezer {
     status: AuthorizationStatus,
     token: String,
+    expires: String,
 }
 
 impl AuthDeezer {
@@ -38,7 +39,25 @@ impl AuthDeezer {
         AuthDeezer {
             status: AuthorizationStatus::Nothing,
             token: "".to_string(),
+            expires: "".to_string(),
         }
+    }
+
+    /// Take server response and parse it to tuple (token, expires)
+    /// or error is returned
+    fn extract_access_token(response: String) -> Result<(String, String), &'static str> {
+        let token_pattern = "access_token=";
+        let expires_pattern = "&expires=";
+        if let Some(begin) = response.find(&token_pattern) {
+            if let Some(end) = response.rfind(&expires_pattern) {
+                let token = response[(begin + token_pattern.len())..end].to_string();
+                let expires = response[(end + expires_pattern.len())..].to_string();
+
+                return Ok((token, expires))
+            };
+        }
+
+        Err("Could not find access token part in response")
     }
 }
 
@@ -105,7 +124,7 @@ impl AuthMethods for AuthDeezer {
         let base_uri = "https://connect.deezer.com/oauth/access_token.php?app_id=".to_string();
         let complete_uri = base_uri + app_id + "&secret=" + app_secret + "&code=" + code;
 
-		// Get the token
+        // Get the token
         let client = Client::new();
         // Send get to the server
         if let Ok(mut res) = client.get(&complete_uri).send() {
@@ -117,7 +136,9 @@ impl AuthMethods for AuthDeezer {
             }
 
             println!("response: {}", body);
-            // TODO: Parse response and test this
+            let (token, expires) = try!(AuthDeezer::extract_access_token(body));
+            self.save_token(token);
+            self.expires = expires;
 
             // retrieve the token
             self.status = AuthorizationStatus::AuthorizationCompleted;
