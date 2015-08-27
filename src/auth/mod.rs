@@ -16,7 +16,7 @@
 //! General authorization and authentication trait
 //! as first Deezer will be using this trait more will come.
 
-pub mod deezer;
+mod deezer;
 
 /// Progress status of the authorization
 pub enum AuthorizationStatus {
@@ -28,6 +28,21 @@ pub enum AuthorizationStatus {
     TokenAquired,
     /// Authorization is completed - can start using service
     AuthorizationCompleted,
+}
+
+/// Type of the service you want to create
+pub enum ServiceType {
+    DEEZER,
+}
+
+/// Create instance of AuthMethods which provides access to
+/// ServiceType service.
+pub fn new(service: ServiceType) -> Box<AuthMethods> {
+    match service {
+        ServiceType::DEEZER => {
+            Box::new(deezer::AuthDeezer::new())
+        }
+    }
 }
 
 pub trait AuthMethods {
