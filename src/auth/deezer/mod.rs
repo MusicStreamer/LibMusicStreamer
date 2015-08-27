@@ -18,6 +18,7 @@
 
 use super::Authenticator;
 use super::AuthorizationStatus;
+use super::Permission;
 
 use std::io::Read;
 use hyper::Client;
@@ -84,9 +85,23 @@ impl Authenticator for AuthDeezer {
     /// assert_eq!(link, "https://connect.deezer.com/oauth/auth.php?app_id=111\
     ///                   &redirect_uri=http://example.com&perms=basic_access");
     /// ```
-    fn get_authorize_link(&mut self, app_id: &str, redirect_uri: &str) -> String {
+    fn get_authorize_link(&mut self, app_id: &str, redirect_uri: &str, permissions: &[Permission]) -> String {
+        let mut perm_string = "&perms=".to_string();
+
+        for perm in permissions {
+            perm_string = perm_string + match perm {
+                &Permission::BasicAccess => "basic_access",
+                &Permission::Email => "email",
+                &Permission::OfflineAccess => "offline_access",
+                &Permission::ManageLibrary => "manage_library",
+                &Permission::ManageCommunity => "manage_community",
+                &Permission::DeleteLibrary => "delete_library",
+                &Permission::ListeningHistory => "listening_history",
+            }
+        }
+
         let base_uri = "https://connect.deezer.com/oauth/auth.php?app_id=".to_string();
-        let complete_uri = base_uri + app_id + "&redirect_uri=" + redirect_uri + "&perms=basic_access";
+        let complete_uri = base_uri + app_id + "&redirect_uri=" + redirect_uri + &perm_string;
         self.status = AuthorizationStatus::UserAuthentication;
         complete_uri
     }

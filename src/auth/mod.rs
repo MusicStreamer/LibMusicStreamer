@@ -18,6 +18,11 @@
 
 mod deezer;
 
+/// Type of the service you want to create
+pub enum ServiceType {
+    DEEZER,
+}
+
 /// Progress status of the authorization
 pub enum AuthorizationStatus {
     /// Authorization doesn't started yet
@@ -30,12 +35,25 @@ pub enum AuthorizationStatus {
     AuthorizationCompleted,
 }
 
-/// Type of the service you want to create
-pub enum ServiceType {
-    DEEZER,
+/// Possible permissions which application can have
+pub enum Permission {
+    /// Access users basic information
+    BasicAccess,
+    /// Get the user's email
+    Email,
+    /// Access user data any time
+    OfflineAccess,
+    /// Manage users' library
+    ManageLibrary,
+    /// Manage users' friends
+    ManageCommunity,
+    /// Delete library items
+    DeleteLibrary,
+    /// Allow the application to access the user's listening history
+    ListeningHistory,
 }
 
-/// Create instance of AuthMethods which provides access to
+/// Create instance of Authenticator which provides access to
 /// ServiceType service.
 pub fn new(service: ServiceType) -> Box<Authenticator> {
     match service {
@@ -50,7 +68,8 @@ pub trait Authenticator {
     fn status(&self) -> &AuthorizationStatus;
 
     /// Return uri for user to authorize the application in his account
-    fn get_authorize_link(&mut self, app_id: &str, redirect_uri: &str) -> String;
+    fn get_authorize_link(&mut self, app_id: &str, redirect_uri: &str, permissions: &[Permission])
+                          -> String;
 
     /// Get code from response returned by browser after app
     /// authorization is completed by user
