@@ -37,7 +37,7 @@ pub enum ServiceType {
 
 /// Create instance of AuthMethods which provides access to
 /// ServiceType service.
-pub fn new(service: ServiceType) -> Box<AuthMethods> {
+pub fn new(service: ServiceType) -> Box<Authenticator> {
     match service {
         ServiceType::DEEZER => {
             Box::new(deezer::AuthDeezer::new())
@@ -45,7 +45,7 @@ pub fn new(service: ServiceType) -> Box<AuthMethods> {
     }
 }
 
-pub trait AuthMethods {
+pub trait Authenticator {
     /// Get status of ongoing authentication
     fn status(&self) -> &AuthorizationStatus;
 

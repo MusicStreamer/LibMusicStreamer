@@ -16,7 +16,7 @@
 //! Specific deezer implementation of authorization and authentication trait.
 //! Object AuthDeezer will implement whole process.
 
-use super::AuthMethods;
+use super::Authenticator;
 use super::AuthorizationStatus;
 
 use std::io::Read;
@@ -61,7 +61,7 @@ impl AuthDeezer {
     }
 }
 
-impl AuthMethods for AuthDeezer {
+impl Authenticator for AuthDeezer {
     
     /// Get status of ongoing authentication
     fn status(&self) -> &AuthorizationStatus {
